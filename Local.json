@@ -1,0 +1,49 @@
+{
+  "v": 2,
+  "name": "Local",
+  "variables": [
+    {
+      "key": "baseUrl",
+      "initialValue": "http://localhost:3000",
+      "currentValue": "http://localhost:3000",
+      "secret": false
+    },
+    {
+      "key": "token",
+      "initialValue": "lab10-demo-token",
+      "currentValue": "lab10-demo-token",
+      "secret": false
+    },
+    {
+      "key": "newPostId",
+      "initialValue": "",
+      "currentValue": "",
+      "secret": false
+    },
+    {
+      "key": "commentText",
+      "initialValue": "",
+      "currentValue": "",
+      "secret": false
+    },
+    {
+      "key": "LastPostCreationTime",
+      "initialValue": "",
+      "currentValue": "",
+      "secret": false
+    },
+    {
+      "key": "commentId1",
+      "initialValue": "",
+      "currentValue": "",
+      "secret": false
+    },
+    {
+      "key": "commentId2",
+      "initialValue": "",
+      "currentValue": "",
+      "secret": false
+    }
+  ],
+  "id": "yapzt-lab10-local"
+}

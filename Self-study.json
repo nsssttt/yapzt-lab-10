@@ -1,0 +1,289 @@
+{
+  "v": 2,
+  "name": "Self-study",
+  "folders": [],
+  "requests": [
+    {
+      "v": "6",
+      "name": "01 Get posts by user 2",
+      "method": "GET",
+      "endpoint": "<<baseUrl>>/posts",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [
+        {
+          "key": "userId",
+          "value": "2",
+          "active": true
+        }
+      ],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"Filter result\", () => { pw.expect(pw.response.body.length).toBe(1) });\npw.test(\"Author ID\", () => { pw.expect(pw.response.body[0].userId).toBe(2) });"
+    },
+    {
+      "v": "6",
+      "name": "02 Add a post for user 2",
+      "method": "POST",
+      "endpoint": "<<baseUrl>>/posts",
+      "auth": {
+        "authType": "bearer",
+        "authActive": true,
+        "token": "<<token>>"
+      },
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true
+        }
+      ],
+      "body": {
+        "body": "{\n  \"title\": \"Self-study Post\",\n  \"body\": \"Created in Hoppscotch\",\n  \"userId\": 2\n}",
+        "contentType": "application/json"
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 201\", () => { pw.expect(pw.response.status).toBe(201) });\npw.test(\"JSON object\", () => { const body = pw.response.body; pw.expect(body !== null && typeof body === \"object\" && !Array.isArray(body)).toBe(true) });\npw.test(\"Title\", () => { pw.expect(pw.response.body.title).toBe(\"Self-study Post\") });\nif (pw.response.status === 201) pw.env.set(\"newPostId\", String(pw.response.body.id));"
+    },
+    {
+      "v": "6",
+      "name": "03 Add a comment to the new post",
+      "method": "POST",
+      "endpoint": "<<baseUrl>>/comments",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true
+        }
+      ],
+      "body": {
+        "body": "{\n  \"postId\": <<newPostId>>,\n  \"userId\": 2,\n  \"body\": \"<<commentText>>\"\n}",
+        "contentType": "application/json"
+      },
+      "requestVariables": [],
+      "preRequestScript": "pw.env.set(\"commentText\", \"comment-\" + Math.random().toString(36).slice(2));",
+      "testScript": "pw.test(\"HTTP 201\", () => { pw.expect(pw.response.status).toBe(201) });\npw.test(\"JSON object\", () => { const body = pw.response.body; pw.expect(body !== null && typeof body === \"object\" && !Array.isArray(body)).toBe(true) });\npw.test(\"Generated comment matches\", () => { pw.expect(pw.response.body.body).toBe(pw.env.get(\"commentText\")); pw.expect(pw.response.body.postId).toBe(Number(pw.env.get(\"newPostId\"))); });"
+    },
+    {
+      "v": "6",
+      "name": "04 Update the second profile",
+      "method": "PATCH",
+      "endpoint": "<<baseUrl>>/profiles/2",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true
+        }
+      ],
+      "body": {
+        "body": "{\n  \"name\": \"Robert\",\n  \"email\": \"robert@example.com\"\n}",
+        "contentType": "application/json"
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"Name\", () => { pw.expect(pw.response.body.name).toBe(\"Robert\") });\npw.test(\"Email\", () => { pw.expect(pw.response.body.email).toBe(\"robert@example.com\") });"
+    },
+    {
+      "v": "6",
+      "name": "05 Update only the title",
+      "method": "PATCH",
+      "endpoint": "<<baseUrl>>/posts/2",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true
+        }
+      ],
+      "body": {
+        "body": "{\n  \"title\": \"Second Post (patched)\"\n}",
+        "contentType": "application/json"
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"Title\", () => { pw.expect(pw.response.body.title).toBe(\"Second Post (patched)\") });\npw.test(\"Body unchanged\", () => { pw.expect(pw.response.body.body).toBe(\"Another post\") });\npw.test(\"Author unchanged\", () => { pw.expect(pw.response.body.userId).toBe(2) });"
+    },
+    {
+      "v": "6",
+      "name": "06 Find comments for post 2",
+      "method": "GET",
+      "endpoint": "<<baseUrl>>/comments",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [
+        {
+          "key": "postId",
+          "value": "2",
+          "active": true
+        }
+      ],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"Two seeded comments\", () => { pw.expect(pw.response.body.length).toBe(2) });\nconst ids = pw.response.body.map((item) => item.id).sort((a, b) => a - b);\npw.env.set(\"commentId1\", String(ids[0]));\npw.env.set(\"commentId2\", String(ids[1]));"
+    },
+    {
+      "v": "6",
+      "name": "07 Delete the first comment",
+      "method": "DELETE",
+      "endpoint": "<<baseUrl>>/comments/<<commentId1>>",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });"
+    },
+    {
+      "v": "6",
+      "name": "08 Delete the second comment",
+      "method": "DELETE",
+      "endpoint": "<<baseUrl>>/comments/<<commentId2>>",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });"
+    },
+    {
+      "v": "6",
+      "name": "09 Verify all comments were deleted",
+      "method": "GET",
+      "endpoint": "<<baseUrl>>/comments",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [
+        {
+          "key": "postId",
+          "value": "2",
+          "active": true
+        }
+      ],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"No comments\", () => { pw.expect(pw.response.body.length).toBe(0) });"
+    },
+    {
+      "v": "6",
+      "name": "10 Delete the profile",
+      "method": "DELETE",
+      "endpoint": "<<baseUrl>>/profiles/2",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });"
+    },
+    {
+      "v": "6",
+      "name": "11 Verify the profile was deleted",
+      "method": "GET",
+      "endpoint": "<<baseUrl>>/profiles/2",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 404\", () => { pw.expect(pw.response.status).toBe(404) });"
+    },
+    {
+      "v": "6",
+      "name": "12 Check posts after deleting the profile",
+      "method": "GET",
+      "endpoint": "<<baseUrl>>/posts",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "params": [
+        {
+          "key": "userId",
+          "value": "2",
+          "active": true
+        }
+      ],
+      "headers": [],
+      "body": {
+        "body": null,
+        "contentType": null
+      },
+      "requestVariables": [],
+      "preRequestScript": "",
+      "testScript": "pw.test(\"HTTP 200\", () => { pw.expect(pw.response.status).toBe(200) });\npw.test(\"Posts retained\", () => { pw.expect(pw.response.body.length).toBe(2) });\npw.test(\"Original and new entries\", () => { pw.expect(pw.response.body.some((item) => item.id === 2)).toBe(true); pw.expect(pw.response.body.some((item) => item.id === Number(pw.env.get(\"newPostId\")))).toBe(true); });"
+    }
+  ],
+  "auth": {
+    "authType": "inherit",
+    "authActive": true
+  },
+  "headers": []
+}
